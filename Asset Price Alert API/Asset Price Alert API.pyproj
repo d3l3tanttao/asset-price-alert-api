@@ -22,6 +22,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Asset Price Alert API\alembic\env.py" />
+    <Compile Include="Asset Price Alert API\app\assets\models.py" />
+    <Compile Include="Asset Price Alert API\app\assets\router.py" />
+    <Compile Include="Asset Price Alert API\app\assets\schemas.py" />
+    <Compile Include="Asset Price Alert API\app\assets\service.py" />
+    <Compile Include="Asset Price Alert API\app\assets\__init__.py" />
     <Compile Include="Asset Price Alert API\app\auth\dependencies.py" />
     <Compile Include="Asset Price Alert API\app\auth\router.py" />
     <Compile Include="Asset Price Alert API\app\auth\schemas.py" />
@@ -31,6 +36,9 @@
     <Compile Include="Asset Price Alert API\app\config.py" />
     <Compile Include="Asset Price Alert API\app\database.py" />
     <Compile Include="Asset Price Alert API\app\main.py" />
+    <Compile Include="Asset Price Alert API\app\pricing\provider.py" />
+    <Compile Include="Asset Price Alert API\app\pricing\service.py" />
+    <Compile Include="Asset Price Alert API\app\pricing\__init__.py" />
     <Compile Include="Asset Price Alert API\app\users\models.py" />
     <Compile Include="Asset Price Alert API\app\users\__init__.py" />
     <Compile Include="Asset Price Alert API\app\__init__.py" />
@@ -46,6 +54,8 @@
     <Folder Include="Asset Price Alert API\alembic\versions\" />
     <Folder Include="Asset Price Alert API\app\" />
     <Folder Include="Asset Price Alert API\app\auth\" />
+    <Folder Include="Asset Price Alert API\app\assets\" />
+    <Folder Include="Asset Price Alert API\app\pricing\" />
     <Folder Include="Asset Price Alert API\app\users\" />
     <Folder Include="Asset Price Alert API\tests\" />
   </ItemGroup>

@@ -3,6 +3,7 @@ from redis import Redis
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
+from app.assets.router import router as assets_router
 from app.auth.router import router as auth_router
 from app.config import Settings, get_settings
 from app.database import check_database_connection, get_db
@@ -11,10 +12,11 @@ from app.database import check_database_connection, get_db
 app = FastAPI(
     title="Asset Price Alert API",
     description="Backend API for tracking asset prices and creating threshold-based alerts.",
-    version="0.1.0",
+    version="0.3.0",
 )
 
 app.include_router(auth_router)
+app.include_router(assets_router)
 
 
 @app.get("/health", tags=["System"])
