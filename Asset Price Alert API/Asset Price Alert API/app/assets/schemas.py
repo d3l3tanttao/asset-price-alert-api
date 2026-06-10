@@ -58,3 +58,8 @@ class ManualPriceCheckResponse(BaseModel):
     price_check: PriceCheckResponse
     alert_triggered: bool
     alert: AlertResponse | None
+
+class EnqueuePriceCheckResponse(BaseModel):
+    job_id: str
+    status: str
+    asset_id: int

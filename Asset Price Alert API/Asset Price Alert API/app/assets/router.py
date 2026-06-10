@@ -1,11 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy.orm import Session
+from app.jobs.price_checks import run_price_check_job
+from app.queue import price_check_queue
 
 from app.assets.schemas import (
     ManualPriceCheckResponse,
     PriceCheckResponse,
     TrackedAssetCreateRequest,
     TrackedAssetResponse,
+    EnqueuePriceCheckResponse,
 )
 from app.assets.service import (
     create_price_check,
@@ -172,4 +175,38 @@ def get_price_history(
     return list_price_checks(
         db=db,
         tracked_asset=tracked_asset,
+    )
+
+
+@router.post(
+    "/{asset_id}/enqueue-check",
+    response_model=EnqueuePriceCheckResponse,
+)
+def enqueue_asset_check(
+    asset_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> EnqueuePriceCheckResponse:
+    tracked_asset = get_tracked_asset_by_id(
+        db=db,
+        user_id=current_user.id,
+        asset_id=asset_id,
+    )
+
+    if tracked_asset is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Tracked asset not found.",
+        )
+
+    job = price_check_queue.enqueue(
+        run_price_check_job,
+        current_user.id,
+        asset_id,
+    )
+
+    return EnqueuePriceCheckResponse(
+        job_id=job.id,
+        status="queued",
+        asset_id=asset_id,
     )
