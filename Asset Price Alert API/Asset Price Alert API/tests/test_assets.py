@@ -137,6 +137,8 @@ def test_manual_price_check_creates_price_history(
     assert check_data["alert_triggered"] is True
     assert check_data["price_check"]["price"] == "68000.00000000"
     assert check_data["price_check"]["source"] == "mock"
+    assert check_data["alert"] is not None
+    assert check_data["alert"]["message"].startswith("BTC reached alert condition")
 
     history_response = client.get(
         f"/tracked-assets/{asset_id}/price-history",

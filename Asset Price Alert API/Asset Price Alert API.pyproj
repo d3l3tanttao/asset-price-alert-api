@@ -11,6 +11,7 @@
     <OutputPath>.</OutputPath>
     <Name>Asset Price Alert API</Name>
     <RootNamespace>Asset Price Alert API</RootNamespace>
+    <TestFramework>Pytest</TestFramework>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -44,6 +45,7 @@
     <Compile Include="Asset Price Alert API\app\__init__.py" />
     <Compile Include="Asset Price Alert API\run_api.py" />
     <Compile Include="Asset Price Alert API\tests\conftest.py" />
+    <Compile Include="Asset Price Alert API\tests\test_assets.py" />
     <Compile Include="Asset Price Alert API\tests\test_auth.py" />
     <Compile Include="Asset Price Alert API\tests\test_health.py" />
     <Compile Include="Asset Price Alert API\tests\__init__.py" />

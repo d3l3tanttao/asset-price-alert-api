@@ -135,7 +135,7 @@ def check_asset_now(
             detail="Tracked asset not found.",
         )
 
-    price_check, alert_triggered = create_price_check(
+    price_check, alert_triggered, alert = create_price_check(
         db=db,
         tracked_asset=tracked_asset,
     )
@@ -144,6 +144,7 @@ def check_asset_now(
         tracked_asset=tracked_asset,
         price_check=price_check,
         alert_triggered=alert_triggered,
+        alert=alert,
     )
 
 

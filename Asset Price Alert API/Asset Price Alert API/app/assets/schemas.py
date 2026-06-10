@@ -40,9 +40,21 @@ class PriceCheckResponse(BaseModel):
     model_config = {
         "from_attributes": True,
     }
+class AlertResponse(BaseModel):
+    id: int
+    user_id: int
+    tracked_asset_id: int
+    price_check_id: int
+    message: str
+    status: str
+    created_at: datetime
 
+    model_config = {
+        "from_attributes": True,
+    }
 
 class ManualPriceCheckResponse(BaseModel):
     tracked_asset: TrackedAssetResponse
     price_check: PriceCheckResponse
     alert_triggered: bool
+    alert: AlertResponse | None

@@ -65,6 +65,10 @@ class TrackedAsset(Base):
         cascade="all, delete-orphan",
     )
 
+    alerts: Mapped[list["Alert"]] = relationship(
+        cascade="all, delete-orphan",
+        )
+
 
 class PriceCheck(Base):
     __tablename__ = "price_checks"
@@ -105,4 +109,47 @@ class PriceCheck(Base):
 
     tracked_asset: Mapped[TrackedAsset] = relationship(
         back_populates="price_checks",
+    )
+
+class Alert(Base):
+    __tablename__ = "alerts"
+
+    id: Mapped[int] = mapped_column(
+        primary_key=True,
+        index=True,
+    )
+
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"),
+        index=True,
+        nullable=False,
+    )
+
+    tracked_asset_id: Mapped[int] = mapped_column(
+        ForeignKey("tracked_assets.id", ondelete="CASCADE"),
+        index=True,
+        nullable=False,
+    )
+
+    price_check_id: Mapped[int] = mapped_column(
+        ForeignKey("price_checks.id", ondelete="CASCADE"),
+        index=True,
+        nullable=False,
+    )
+
+    message: Mapped[str] = mapped_column(
+        String(500),
+        nullable=False,
+    )
+
+    status: Mapped[str] = mapped_column(
+        String(50),
+        nullable=False,
+        default="created",
+    )
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        default=datetime.utcnow,
+        nullable=False,
     )

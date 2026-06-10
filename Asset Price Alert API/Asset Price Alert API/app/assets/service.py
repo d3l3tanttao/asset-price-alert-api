@@ -2,7 +2,7 @@ from decimal import Decimal
 
 from sqlalchemy.orm import Session
 
-from app.assets.models import PriceCheck, TrackedAsset
+from app.assets.models import Alert, PriceCheck, TrackedAsset
 from app.pricing.provider import get_current_price
 
 
@@ -69,7 +69,7 @@ def delete_tracked_asset(
 def create_price_check(
     db: Session,
     tracked_asset: TrackedAsset,
-) -> tuple[PriceCheck, bool]:
+) -> tuple[PriceCheck, bool, Alert | None]:
     current_price = get_current_price(tracked_asset.symbol)
 
     price_check = PriceCheck(
@@ -89,7 +89,16 @@ def create_price_check(
     db.commit()
     db.refresh(price_check)
 
-    return price_check, alert_triggered
+    alert = None
+
+    if alert_triggered:
+        alert = create_alert(
+            db=db,
+            tracked_asset=tracked_asset,
+            price_check=price_check,
+        )
+
+    return price_check, alert_triggered, alert
 
 
 def list_price_checks(
@@ -116,3 +125,55 @@ def is_alert_triggered(
         return current_price >= target_price
 
     return False
+
+def create_alert(
+    db: Session,
+    tracked_asset: TrackedAsset,
+    price_check: PriceCheck,
+) -> Alert:
+    message = (
+        f"{tracked_asset.symbol} reached alert condition: "
+        f"current price {price_check.price} {price_check.currency}, "
+        f"target {tracked_asset.target_price} {tracked_asset.currency}, "
+        f"condition {tracked_asset.condition}."
+    )
+
+    alert = Alert(
+        user_id=tracked_asset.user_id,
+        tracked_asset_id=tracked_asset.id,
+        price_check_id=price_check.id,
+        message=message,
+        status="created",
+    )
+
+    db.add(alert)
+    db.commit()
+    db.refresh(alert)
+
+    return alert
+
+def list_alerts(
+    db: Session,
+    user_id: int,
+) -> list[Alert]:
+    return (
+        db.query(Alert)
+        .filter(Alert.user_id == user_id)
+        .order_by(Alert.created_at.desc())
+        .all()
+    )
+
+
+def get_alert_by_id(
+    db: Session,
+    user_id: int,
+    alert_id: int,
+) -> Alert | None:
+    return (
+        db.query(Alert)
+        .filter(
+            Alert.id == alert_id,
+            Alert.user_id == user_id,
+        )
+        .first()
+    )
